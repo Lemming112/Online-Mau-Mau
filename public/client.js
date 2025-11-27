@@ -1,0 +1,113 @@
+let ws;
+let roomId;
+let playerId;
+
+const joinBtn = document.getElementById("joinBtn");
+const startBtn = document.getElementById("startBtn");
+const drawBtn = document.getElementById("drawBtn");
+
+joinBtn.onclick = () => {
+  const room = document.getElementById("room").value.trim();
+  const name = document.getElementById("name").value.trim() || "Spieler";
+  roomId = room || undefined;
+
+  ws = new WebSocket(getWsUrl());
+  ws.onopen = () => {
+    log("Verbunden.");
+    ws.send(JSON.stringify({ type: "join", roomId, name }));
+    startBtn.disabled = false;
+  };
+  ws.onmessage = (ev) => handle(JSON.parse(ev.data));
+  ws.onclose = () => log("Verbindung geschlossen.");
+};
+
+startBtn.onclick = () => {
+  if (!ws) return;
+  ws.send(JSON.stringify({ type: "start", roomId }));
+};
+
+drawBtn.onclick = () => {
+  if (!ws || !roomId) return;
+  ws.send(JSON.stringify({ type: "draw", roomId }));
+};
+
+function handle(msg) {
+  switch (msg.type) {
+    case "hello":
+      log(msg.payload);
+      break;
+    case "joined":
+      roomId = msg.payload.roomId;
+      playerId = msg.payload.playerId;
+      log(`Raum: ${roomId}, Spieler-ID: ${playerId}`);
+      break;
+    case "players":
+      renderPlayers(msg.payload);
+      break;
+    case "state":
+      renderState(msg.payload);
+      break;
+    case "play_ok":
+      log(`Karte gespielt: ${fmtCard(msg.payload.card)}`);
+      break;
+    case "play_fail":
+      log(`Ungültiger Zug: ${fmtCard(msg.payload.card)}`);
+      break;
+    case "drawn":
+      log(`Gezogene Karte`);
+      break;
+    default:
+      log(`Msg: ${JSON.stringify(msg)}`);
+  }
+}
+
+function renderPlayers(players) {
+  document.getElementById("players").textContent =
+    "Spieler: " + players.map((p) => p.name).join(", ");
+}
+
+function renderState(state) {
+  document.getElementById("top").textContent =
+    "Ablage: " + (state.top ? fmtCard(state.top) : "-");
+  document.getElementById("turn").textContent =
+    "Am Zug: " + state.players[state.turn ?? 0];
+
+  const handCount = state.counts?.[playerId] ?? 0;
+  const handDiv = document.getElementById("hand");
+  handDiv.innerHTML = "";
+  // Dummy selectable cards (you only see count; for demo, we generate buttons for legal suits/ranks)
+  ["7", "8", "9", "10", "J", "Q", "K", "A"].forEach((r) => {
+    ["♠", "♥", "♦", "♣"].forEach((s) => {
+      const btn = document.createElement("button");
+      btn.textContent = `${r}${s}`;
+      btn.onclick = () => {
+        ws.send(
+          JSON.stringify({
+            type: "play",
+            roomId,
+            card: { rank: r, suit: s },
+          })
+        );
+      };
+      handDiv.appendChild(btn);
+    });
+  });
+
+  drawBtn.disabled = false;
+}
+
+function getWsUrl() {
+  const proto = location.protocol === "https:" ? "wss" : "ws";
+  return `${proto}://${location.host}`;
+}
+
+function log(t) {
+  const el = document.getElementById("log");
+  const line = document.createElement("div");
+  line.textContent = t;
+  el.appendChild(line);
+}
+
+function fmtCard(c) {
+  return `${c.rank}${c.suit}`;
+}
