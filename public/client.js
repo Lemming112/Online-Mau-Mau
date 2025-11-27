@@ -9,21 +9,23 @@ const drawBtn = document.getElementById("drawBtn");
 joinBtn.onclick = () => {
   const room = document.getElementById("room").value.trim();
   const name = document.getElementById("name").value.trim() || "Spieler";
-  roomId = room || undefined;
 
   ws = new WebSocket(getWsUrl());
   ws.onopen = () => {
     log("Verbunden.");
-    ws.send(JSON.stringify({ type: "join", roomId, name }));
-    startBtn.disabled = false;
+    ws.send(JSON.stringify({ type: "join", roomId: room, name }));
   };
   ws.onmessage = (ev) => handle(JSON.parse(ev.data));
   ws.onclose = () => log("Verbindung geschlossen.");
-  ws.onerror = (err) => log("WebSocket-Fehler: " + err.message);
+  ws.onerror = (err) => {
+  console.error("WebSocket-Fehler:", err);
+  log("WebSocket-Fehler: " + JSON.stringify(err));
+};
+
 };
 
 startBtn.onclick = () => {
-  if (!ws) return;
+  if (!ws || !roomId) return;
   ws.send(JSON.stringify({ type: "start", roomId }));
 };
 
@@ -38,9 +40,10 @@ function handle(msg) {
       log(msg.payload);
       break;
     case "joined":
-      roomId = msg.payload.roomId;
+      roomId = msg.payload.roomId;   // vom Server übernehmen
       playerId = msg.payload.playerId;
       log(`Raum: ${roomId}, Spieler-ID: ${playerId}`);
+      startBtn.disabled = false;     // erst jetzt aktivieren
       break;
     case "players":
       renderPlayers(msg.payload);
@@ -58,7 +61,6 @@ function handle(msg) {
       log(`Gezogene Karte`);
       break;
     case "error":
-      // NEU: Fehlernachrichten vom Server anzeigen
       log("⚠️ Fehler: " + msg.payload);
       break;
     default:
@@ -77,7 +79,6 @@ function renderState(state) {
   document.getElementById("turn").textContent =
     "Am Zug: " + state.players[state.turn ?? 0];
 
-  const handCount = state.counts?.[playerId] ?? 0;
   const handDiv = document.getElementById("hand");
   handDiv.innerHTML = "";
 
