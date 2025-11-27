@@ -17,7 +17,11 @@ joinBtn.onclick = () => {
   };
   ws.onmessage = (ev) => handle(JSON.parse(ev.data));
   ws.onclose = () => log("Verbindung geschlossen.");
-  ws.onerror = (err) => log("WebSocket-Fehler: " + err.message);
+  ws.onerror = (err) => {
+  console.error("WebSocket-Fehler:", err);
+  log("WebSocket-Fehler: " + JSON.stringify(err));
+};
+
 };
 
 startBtn.onclick = () => {
