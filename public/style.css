@@ -1,0 +1,38 @@
+body {
+  font-family: system-ui, sans-serif;
+  margin: 0;
+  padding: 20px;
+  background: #111;
+  color: #eee;
+}
+main {
+  max-width: 900px;
+  margin: 0 auto;
+}
+section {
+  margin: 16px 0;
+  padding: 12px;
+  background: #1c1c1c;
+  border-radius: 8px;
+}
+button {
+  margin: 4px;
+  padding: 8px 12px;
+  background: #2a7ef0;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+button:disabled {
+  background: #333;
+  cursor: not-allowed;
+}
+input {
+  margin: 4px;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #333;
+  background: #151515;
+  color: #eee;
+}
