@@ -62,3 +62,7 @@ wss.on("connection", (ws) => {
 httpServer.listen(PORT, () => {
   console.log(`Server läuft auf Port ${PORT}`);
 });
+app.get("/", (req, res) => {
+  res.send("Mau Mau Server läuft 🚀");
+});
+
