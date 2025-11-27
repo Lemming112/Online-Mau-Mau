@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <title>Mau Mau Online</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="/style.css" rel="stylesheet" />
+  </head>
+  <body>
+    <main>
+      <h1>Mau Mau Online</h1>
+
+      <section class="join">
+        <input id="room" placeholder="Raum-ID (leer für neu)" />
+        <input id="name" placeholder="Dein Name" />
+        <button id="joinBtn">Beitreten</button>
+        <button id="startBtn" disabled>Spiel starten</button>
+      </section>
+
+      <section class="state">
+        <div id="players"></div>
+        <div id="top"></div>
+        <div id="turn"></div>
+        <div id="hand"></div>
+        <div id="log"></div>
+        <button id="drawBtn" disabled>Karte ziehen</button>
+      </section>
+    </main>
+
+    <script src="/client.js" type="module"></script>
+  </body>
+</html>
