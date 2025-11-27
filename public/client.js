@@ -19,6 +19,7 @@ joinBtn.onclick = () => {
   };
   ws.onmessage = (ev) => handle(JSON.parse(ev.data));
   ws.onclose = () => log("Verbindung geschlossen.");
+  ws.onerror = (err) => log("WebSocket-Fehler: " + err.message);
 };
 
 startBtn.onclick = () => {
@@ -56,6 +57,10 @@ function handle(msg) {
     case "drawn":
       log(`Gezogene Karte`);
       break;
+    case "error":
+      // NEU: Fehlernachrichten vom Server anzeigen
+      log("⚠️ Fehler: " + msg.payload);
+      break;
     default:
       log(`Msg: ${JSON.stringify(msg)}`);
   }
@@ -75,7 +80,8 @@ function renderState(state) {
   const handCount = state.counts?.[playerId] ?? 0;
   const handDiv = document.getElementById("hand");
   handDiv.innerHTML = "";
-  // Dummy selectable cards (you only see count; for demo, we generate buttons for legal suits/ranks)
+
+  // Dummy Buttons für Karten (Demo)
   ["7", "8", "9", "10", "J", "Q", "K", "A"].forEach((r) => {
     ["♠", "♥", "♦", "♣"].forEach((s) => {
       const btn = document.createElement("button");
