@@ -65,4 +65,3 @@ httpServer.listen(PORT, () => {
 app.get("/", (req, res) => {
   res.send("Mau Mau Server läuft 🚀");
 });
-
