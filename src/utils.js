@@ -12,14 +12,17 @@ export function buildDeck() {
 }
 
 /* Creates a player deck (dummy implementation) */
-export function create_player_deck() {
-  const player_deck = [7];
+export function deal_player_decks(anzahl_spieler, karten_pro_spieler) {
   const temp_deck = buildDeck();
-  for(let i=0;i<7;i++) {
-    console.log("Creating player deck...");
-    player_deck[i] = temp_deck.pop(i);
+  shuffle(temp_deck);
+  const player_decks = [];
+  for(let i=0;i<anzahl_spieler;i++) {
+    player_decks[i] = [];
+    for(let j=0;j<karten_pro_spieler;j++) {
+      player_decks[i].push( temp_deck.shift() );
+    }
   }
-  return player_deck;
+  return player_decks;
 }
 
 /* Shuffles an array using the Fisher-Yates algorithm */
