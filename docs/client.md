@@ -3,7 +3,7 @@
 Dieses Skript stellt die Client-Logik für ein Multiplayer-Kartenspiel bereit.  
 Es verbindet sich per **WebSocket** mit dem Server, verwaltet die Benutzeroberfläche und verarbeitet Nachrichten.
 
-Die Datei `client.js` liegt in `src/client.js`
+Die Datei `client.js` liegt in `src/client.js`.
 
 ---
 

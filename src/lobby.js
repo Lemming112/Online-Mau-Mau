@@ -1,12 +1,14 @@
 import { v4 as uuid } from "uuid";
 import { Game } from "./game.js";
 
+
 export class Lobby {
   constructor() {
     this.rooms = new Map();     // roomId -> { game, players: Map(ws -> {id,name}) }
     this.wsToRoom = new Map();  // ws -> roomId
   }
 
+  /* Tritt einem Raum bei, erstellt ihn falls nicht existent */
   join(ws, roomId = uuid().slice(0, 6), name = "Spieler") {
     if (!roomId) {
       roomId = uuid().slice(0, 6);
@@ -55,6 +57,7 @@ export class Lobby {
     }
   }
 
+  /* Startet ein Spiel im angegebenen Raum */
   start(roomId) {
     const room = this.rooms.get(roomId);
     if (!room) {
@@ -63,8 +66,10 @@ export class Lobby {
     }
     room.game.start(Array.from(room.players.values()).map((p) => p.id));
     this.sendState(roomId);
+
   }
 
+  /* Verarbeitet einen Spielzug */
   play(roomId, ws, card) {
     const room = this.rooms.get(roomId);
     if (!room) {

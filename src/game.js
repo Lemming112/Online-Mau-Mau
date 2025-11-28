@@ -1,4 +1,4 @@
-import { buildDeck, shuffle } from "./utils.js";
+import { buildDeck, shuffle, deal_player_decks } from "./utils.js";
 
 export class Game {
   constructor() {
@@ -12,14 +12,25 @@ export class Game {
     this.requestSuit = null; // for Jack wish (Ass in Mau Mau-Varianten -> hier Jack)
   }
 
+  
   start(playerIds) {
+    //Spieler setzen
     this.players = playerIds.slice();
-    this.deck = shuffle(buildDeck());
-    this.discard = [];
-    this.hands.clear();
-    for (const p of this.players) {
-      this.hands.set(p, this.deck.splice(0, 5));
+
+    this.deck = buildDeck();
+    shuffle(this.deck);
+    this.hands.clear;
+
+    for(const p of this.players){
+      const hand = [];
+      for(let i = 0; i<7; i++){
+        hand.push(this.deck.pop());
+      }
+      this.hands.set(p, hand);
     }
+    
+    this.discard = [];
+
     // Flip first card to discard
     this.discard.push(this.deck.shift());
     this.turn = 0;
@@ -43,6 +54,7 @@ export class Game {
     return cards.at(-1) ?? null;
   }
 
+  
   play(playerId, card) {
     if (!this.started || playerId !== this.currentPlayer()) return false;
     const hand = this.hands.get(playerId);

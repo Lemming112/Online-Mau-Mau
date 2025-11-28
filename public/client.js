@@ -2,10 +2,12 @@ let ws;
 let roomId;
 let playerId;
 
+/* Buttons */
 const joinBtn = document.getElementById("joinBtn");
 const startBtn = document.getElementById("startBtn");
 const drawBtn = document.getElementById("drawBtn");
 
+/* Verbindet mit dem Server und tritt einem Raum bei */
 joinBtn.onclick = () => {
   const room = document.getElementById("room").value.trim();
   const name = document.getElementById("name").value.trim() || "Spieler";
@@ -24,6 +26,7 @@ joinBtn.onclick = () => {
 
 };
 
+/* Start- und Zieh-Buttons */
 startBtn.onclick = () => {
   if (!ws || !roomId) return;
   ws.send(JSON.stringify({ type: "start", roomId }));
@@ -34,6 +37,7 @@ drawBtn.onclick = () => {
   ws.send(JSON.stringify({ type: "draw", roomId }));
 };
 
+/* Verarbeitet eingehende Nachrichten */
 function handle(msg) {
   switch (msg.type) {
     case "hello":
@@ -68,11 +72,13 @@ function handle(msg) {
   }
 }
 
+/* Rendert die Spielerliste */
 function renderPlayers(players) {
   document.getElementById("players").textContent =
     "Spieler: " + players.map((p) => p.name).join(", ");
 }
 
+/* Rendert den Spielzustand */
 function renderState(state) {
   document.getElementById("top").textContent =
     "Ablage: " + (state.top ? fmtCard(state.top) : "-");
@@ -81,6 +87,8 @@ function renderState(state) {
 
   const handDiv = document.getElementById("hand");
   handDiv.innerHTML = "";
+
+  
 
   // Dummy Buttons für Karten (Demo)
   ["7", "8", "9", "10", "J", "Q", "K", "A"].forEach((r) => {
@@ -103,11 +111,13 @@ function renderState(state) {
   drawBtn.disabled = false;
 }
 
+/* Ermittelt die WebSocket-URL basierend auf dem aktuellen Protokoll */
 function getWsUrl() {
   const proto = location.protocol === "https:" ? "wss" : "ws";
   return `${proto}://${location.host}`;
 }
 
+/* Protokollausgabe */
 function log(t) {
   const el = document.getElementById("log");
   const line = document.createElement("div");
@@ -115,6 +125,7 @@ function log(t) {
   el.appendChild(line);
 }
 
+/* Formatiert eine Karte als String */
 function fmtCard(c) {
   return `${c.rank}${c.suit}`;
 }
