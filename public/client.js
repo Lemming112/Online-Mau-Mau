@@ -24,6 +24,7 @@ joinBtn.onclick = () => {
 
 };
 
+/* Start- und Zieh-Buttons */
 startBtn.onclick = () => {
   if (!ws || !roomId) return;
   ws.send(JSON.stringify({ type: "start", roomId }));
