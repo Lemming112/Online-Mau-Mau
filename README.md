@@ -24,6 +24,9 @@ Ein minimaler WebSocket-Server plus statischer Client für Mau Mau. Ziel: schnel
 - `ORIGIN`: CORS-Erlaubnis (z. B. deine Railway-Domain)
 - `PORT`: von Railway gesetzt (lokal 3000)
 
+## Dateien
+Spielverzeichnis mit den Regeln ist in 'src/game.js' zu finden
+
 ## Nächste Schritte
 - Echte Hand-Karten pro Spieler im Client anzeigen (nicht nur Platzhalter)
 - Wunschfarbe nach J implementieren (Client-Dialog -> Server)
